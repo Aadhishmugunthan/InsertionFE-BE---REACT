@@ -1,65 +1,99 @@
 import { useEffect, useState } from "react";
-import { getTasks, deleteTask } from "../service/api";
+import {
+  getTasks,
+  deleteTask,
+  updateTask
+} from "../service/api";
 
 function TaskList() {
 
-    const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
-    useEffect(() => {
-        fetchTasks();
-    }, []);
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
-    const fetchTasks = async () => {
+  const fetchTasks = async () => {
+    try {
 
-        try {
+      const response = await getTasks();
 
-            const response = await getTasks();
+      setTasks(response.data);
 
-            setTasks(response.data);
+    } catch (error) {
 
-        } catch (error) {
+      console.error("Error fetching tasks", error);
 
-            console.error("Error fetching tasks", error);
+    }
+  };
 
-        }
+  const handleDelete = async (id) => {
+
+    await deleteTask(id);
+
+    fetchTasks();
+  };
+
+  const handleToggle = async (task) => {
+
+    const updatedTask = {
+      ...task,
+      completed: !task.completed
     };
 
-    const handleDelete = async (id) => {
+    await updateTask(task.id, updatedTask);
 
-        await deleteTask(id);
+    fetchTasks();
+  };
 
-        fetchTasks();
-    };
+  return (
 
-    
+    <div>
 
-    return (
-  <div>
+      <h2>Task List</h2>
 
-    <h2>Task List</h2>
+      {tasks.map(task => (
 
-    {tasks.map(task => (
+        <div
+          key={task.id}
+          className="task-item"
+        >
 
-      <div key={task.id} className="task-item">
+          <input
+            type="checkbox"
+            checked={task.completed}
+            onChange={() => handleToggle(task)}
+          />
 
-        <div className="task-title">
-          {task.title}
+          <div
+            className="task-title"
+            style={{
+              textDecoration:
+                task.completed
+                  ? "line-through"
+                  : "none"
+            }}
+          >
+            {task.title}
+          </div>
+
+          <div className="task-desc">
+            {task.description}
+          </div>
+
+          <button
+            onClick={() => handleDelete(task.id)}
+          >
+            Delete
+          </button>
+
         </div>
 
-        <div className="task-desc">
-          {task.description}
-        </div>
+      ))}
 
-        <button onClick={() => handleDelete(task.id)}>
-          Delete
-        </button>
+    </div>
 
-      </div>
-
-    ))}
-
-  </div>
-);
+  );
 }
 
 export default TaskList;

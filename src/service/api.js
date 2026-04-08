@@ -16,3 +16,8 @@ export const deleteTask = (id) => {
 
     return axios.delete(`${API_URL}/${id}`);
 };
+export const updateTask = (id, task) => {
+
+    return axios.put(`${API_URL}/${id}`, task);
+
+};
