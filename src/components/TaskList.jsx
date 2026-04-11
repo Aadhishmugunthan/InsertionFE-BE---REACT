@@ -5,13 +5,13 @@ import {
   updateTask
 } from "../service/api";
 
-function TaskList() {
+function TaskList({ reload }) {
 
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [reload]);
 
   const fetchTasks = async () => {
     try {
