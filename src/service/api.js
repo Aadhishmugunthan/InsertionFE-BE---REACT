@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/tasks";
+const API_URL = "https://insertionfe-be-springboot.onrender.com/api/tasks";
 
 export const getTasks = () => {
 
